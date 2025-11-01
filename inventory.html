@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory Management - Sawant Optician</title>
+  <script src="https://kit.fontawesome.com/a2e0e6ad54.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f2f2f2, #e0e0e0);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 22px;
+      color: #222;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 i {
+      color: #d4af37;
+    }
+
+    .back-btn {
+      background: #d4af37;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 25px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    button {
+      background-color: #d4af37;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #b9972e;
+    }
+
+    .search-bar {
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+
+    th {
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    tr.low-stock {
+      background-color: #fff3cd;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .action-btn.edit {
+      color: #0275d8;
+    }
+
+    .action-btn.delete {
+      color: #d9534f;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #777;
+      font-size: 13px;
+      padding-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fa-solid fa-boxes-stacked"></i> Inventory Management</h1>
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button>
+  </header>
+
+  <div class="container">
+    <h2>Manage Your Stock</h2>
+
+    <form id="inventoryForm">
+      <input type="text" id="itemName" placeholder="Item Name" required />
+      <select id="itemCategory">
+        <option value="Frame">Frame</option>
+        <option value="Lens">Lens</option>
+        <option value="Solution">Solution</option>
+        <option value="Accessory">Accessory</option>
+      </select>
+      <input type="number" id="itemQty" placeholder="Quantity" required />
+      <input type="number" id="itemPrice" placeholder="Unit Price (₹)" required />
+      <button type="submit">Add Item</button>
+    </form>
+
+    <div class="search-bar">
+      <input type="text" id="searchBox" placeholder="Search item..." />
+      <button onclick="clearInventory()" style="background:#d9534f;">Clear All</button>
+    </div>
+
+    <table id="inventoryTable">
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Price (₹)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <footer>© 2025 Sawant Optician | Inventory Powered by LocalStorage</footer>
+
+  <script>
+    const form = document.getElementById("inventoryForm");
+    const tableBody = document.querySelector("#inventoryTable tbody");
+    const searchBox = document.getElementById("searchBox");
+
+    let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+    function renderInventory() {
+      tableBody.innerHTML = "";
+      const filtered = inventory.filter(item =>
+        item.name.toLowerCase().includes(searchBox.value.toLowerCase())
+      );
+      filtered.forEach((item, index) => {
+        const row = document.createElement("tr");
+        if (item.qty <= 5) row.classList.add("low-stock");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.category}</td>
+          <td>${item.qty}</td>
+          <td>${item.price}</td>
+          <td>
+            <button class="action-btn edit" onclick="editItem(${index})"><i class="fa-solid fa-pen"></i></button>
+            <button class="action-btn delete" onclick="deleteItem(${index})"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      localStorage.setItem("inventory", JSON.stringify(inventory));
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const item = {
+        name: itemName.value,
+        category: itemCategory.value,
+        qty: parseInt(itemQty.value),
+        price: parseFloat(itemPrice.value),
+      };
+      inventory.push(item);
+      form.reset();
+      renderInventory();
+    });
+
+    function editItem(index) {
+      const item = inventory[index];
+      itemName.value = item.name;
+      itemCategory.value = item.category;
+      itemQty.value = item.qty;
+      itemPrice.value = item.price;
+      deleteItem(index);
+    }
+
+    function deleteItem(index) {
+      inventory.splice(index, 1);
+      renderInventory();
+    }
+
+    function clearInventory() {
+      if (confirm("Clear all inventory items?")) {
+        inventory = [];
+        renderInventory();
+      }
+    }
+
+    searchBox.addEventListener("input", renderInventory);
+    renderInventory();
+  </script>
+</body>
+</html>

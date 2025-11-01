@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expenses - Sawant Optician</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f7f7f7, #e8e8e8);
+      color: #333;
+    }
+
+    header {
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 40px;
+    }
+
+    header h1 {
+      font-size: 22px;
+      color: #222;
+    }
+
+    header button {
+      background: #d4af37;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    header button:hover {
+      background: #b38f2f;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #222;
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    input, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      width: 200px;
+    }
+
+    button.add-btn {
+      background: #d4af37;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button.add-btn:hover {
+      background: #b38f2f;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #f3f3f3;
+      color: #333;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .total {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 15px;
+      color: #111;
+      font-size: 16px;
+    }
+
+    .export-buttons {
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .export-buttons button {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      margin: 0 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .export-buttons button:hover {
+      background: #222;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 15px;
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>💰 Expense Tracker - Sawant Optician</h1>
+    <button onclick="window.location.href='dashboard.html'">⬅ Back to Dashboard</button>
+  </header>
+
+  <div class="container">
+    <h2>Record Daily Expenses</h2>
+
+    <div class="form-row">
+      <input type="date" id="date" />
+      <input type="text" id="description" placeholder="Description" />
+      <input type="number" id="amount" placeholder="Amount (₹)" />
+      <select id="category">
+        <option value="Rent">Rent</option>
+        <option value="Electricity">Electricity</option>
+        <option value="Supplies">Supplies</option>
+        <option value="Maintenance">Maintenance</option>
+        <option value="Other">Other</option>
+      </select>
+      <button class="add-btn" onclick="addExpense()">+ Add</button>
+    </div>
+
+    <table id="expenseTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Amount (₹)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="total" id="total">Total: ₹0</div>
+
+    <div class="export-buttons">
+      <button onclick="exportExcel()">📊 Export Excel</button>
+      <button onclick="exportPDF()">📄 Export PDF</button>
+    </div>
+  </div>
+
+  <footer>© 2025 Sawant Optician | Expense Management System</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    const expenses = [];
+
+    function addExpense() {
+      const date = document.getElementById('date').value;
+      const description = document.getElementById('description').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const category = document.getElementById('category').value;
+
+      if (!date || !description || !amount) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      expenses.push({ date, description, category, amount });
+      updateTable();
+      clearForm();
+    }
+
+    function clearForm() {
+      document.getElementById('description').value = "";
+      document.getElementById('amount').value = "";
+    }
+
+    function updateTable() {
+      const tbody = document.querySelector("#expenseTable tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      expenses.forEach((exp, index) => {
+        total += exp.amount;
+        const row = `
+          <tr>
+            <td>${exp.date}</td>
+            <td>${exp.description}</td>
+            <td>${exp.category}</td>
+            <td>₹${exp.amount.toFixed(2)}</td>
+            <td><button onclick="deleteExpense(${index})" style="background:#d9534f;color:#fff;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;">Delete</button></td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById('total').innerText = `Total: ₹${total.toFixed(2)}`;
+    }
+
+    function deleteExpense(index) {
+      if (confirm("Delete this expense?")) {
+        expenses.splice(index, 1);
+        updateTable();
+      }
+    }
+
+    function exportExcel() {
+      const ws = XLSX.utils.json_to_sheet(expenses);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Expenses");
+      XLSX.writeFile(wb, "Expenses.xlsx");
+    }
+
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Sawant Optician - Expense Report", 14, 20);
+      let y = 30;
+      expenses.forEach((exp, i) => {
+        doc.text(`${i+1}. ${exp.date} | ${exp.description} | ${exp.category} | ₹${exp.amount}`, 14, y);
+        y += 8;
+      });
+      doc.text(document.getElementById('total').innerText, 14, y + 10);
+      doc.save("Expenses.pdf");
+    }
+  </script>
+</body>
+</html>

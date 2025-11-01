@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - Sawant Optician</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff8dc;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: #d32f2f;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .card i {
+      font-size: 35px;
+      color: #d32f2f;
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      margin: 5px 0;
+      font-size: 22px;
+      color: #b71c1c;
+    }
+
+    .charts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .chart-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #f2f2f2;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #ffebee;
+      color: #b71c1c;
+    }
+
+    td select {
+      padding: 4px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .actions {
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    button {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 10px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #9a0007;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #777;
+      margin: 30px 0;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  📊 Sawant Optician - Reports Dashboard
+</header>
+
+<div class="container">
+
+  <div class="summary-cards">
+    <div class="card">
+      <i class="fas fa-file-invoice"></i>
+      <h3 id="totalBills">0</h3>
+      <p>Total Bills</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-rupee-sign"></i>
+      <h3 id="totalIncome">₹0</h3>
+      <p>Total Income</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-truck"></i>
+      <h3 id="pendingDeliveries">0</h3>
+      <p>Pending Deliveries</p>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-container">
+      <canvas id="salesChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="deliveryChart"></canvas>
+    </div>
+  </div>
+
+  <h2 style="text-align:center; color:#b71c1c;">All Bills Summary</h2>
+
+  <div id="billsTableContainer"></div>
+
+  <div class="actions">
+    <button onclick="exportToExcel()">📘 Export Excel</button>
+    <button onclick="window.print()">🖨️ Export PDF</button>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+function loadReports() {
+  const bills = JSON.parse(localStorage.getItem('bills')) || [];
+  if (bills.length === 0) {
+    document.getElementById('billsTableContainer').innerHTML = '<p class="no-data">No bills found yet. Create one in Invoice page!</p>';
+    return;
+  }
+
+  // Update summary cards
+  document.getElementById('totalBills').textContent = bills.length;
+  const totalIncome = bills.reduce((sum, b) => sum + parseFloat(b.total || 0), 0);
+  document.getElementById('totalIncome').textContent = '₹' + totalIncome.toFixed(2);
+  const pending = bills.filter(b => b.deliveryStatus === "Awaiting Confirmation").length;
+  document.getElementById('pendingDeliveries').textContent = pending;
+
+  // Generate table
+  let tableHTML = `<table><tr>
+    <th>Bill No</th><th>Date</th><th>Name</th><th>Contact</th>
+    <th>Total</th><th>Advance</th><th>Balance</th><th>Delivery</th></tr>`;
+  bills.forEach((b, i) => {
+    tableHTML += `
+      <tr>
+        <td>${b.billNo}</td>
+        <td>${b.billDate}</td>
+        <td>${b.custName}</td>
+        <td>${b.custContact}</td>
+        <td>₹${b.total}</td>
+        <td>₹${b.advance}</td>
+        <td>₹${b.balance}</td>
+        <td>
+          <select onchange="updateDelivery(${i}, this.value)">
+            <option ${b.deliveryStatus==="Yes"?"selected":""}>Yes</option>
+            <option ${b.deliveryStatus==="No"?"selected":""}>No</option>
+            <option ${b.deliveryStatus==="Awaiting Confirmation"?"selected":""}>Awaiting Confirmation</option>
+          </select>
+        </td>
+      </tr>`;
+  });
+  tableHTML += `</table>`;
+  document.getElementById('billsTableContainer').innerHTML = tableHTML;
+
+  renderCharts(bills);
+}
+
+function updateDelivery(index, status) {
+  const bills = JSON.parse(localStorage.getItem('bills')) || [];
+  bills[index].deliveryStatus = status;
+  localStorage.setItem('bills', JSON.stringify(bills));
+  loadReports(); // Refresh data
+}
+
+function exportToExcel() {
+  const bills = JSON.parse(localStorage.getItem('bills')) || [];
+  if (bills.length === 0) return alert("No data to export!");
+  const ws = XLSX.utils.json_to_sheet(bills);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Bills");
+  XLSX.writeFile(wb, "Sawant_Optician_Reports.xlsx");
+}
+
+function renderCharts(bills) {
+  const salesData = {};
+  bills.forEach(b => {
+    salesData[b.billDate] = (salesData[b.billDate] || 0) + parseFloat(b.total || 0);
+  });
+  const dates = Object.keys(salesData);
+  const totals = Object.values(salesData);
+
+  new Chart(document.getElementById('salesChart'), {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Daily Sales (₹)',
+        data: totals,
+        borderColor: '#d32f2f',
+        backgroundColor: 'rgba(211,47,47,0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: { responsive: true }
+  });
+
+  const statuses = { "Yes": 0, "No": 0, "Awaiting Confirmation": 0 };
+  bills.forEach(b => statuses[b.deliveryStatus]++);
+  new Chart(document.getElementById('deliveryChart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(statuses),
+      datasets: [{
+        data: Object.values(statuses),
+        backgroundColor: ['#66bb6a', '#ef5350', '#ffee58']
+      }]
+    },
+    options: { responsive: true }
+  });
+}
+
+window.onload = loadReports;
+</script>
+</body>
+</html>

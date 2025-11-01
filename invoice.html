@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sawant Optician Invoice</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #fff8dc, #fff3e0);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 30px 10px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .invoice-container {
+      width: 148mm;
+      min-height: 210mm;
+      background: #fffef2;
+      border: 3px solid #d32f2f;
+      padding: 20px;
+      border-radius: 12px;
+      color: #000;
+      box-shadow: 0 6px 20px rgba(211, 47, 47, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .invoice-container:hover {
+      transform: scale(1.01);
+      box-shadow: 0 8px 25px rgba(211, 47, 47, 0.45);
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 3px solid #d32f2f;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .header h1 {
+      color: #b71c1c;
+      font-size: 30px;
+      margin: 5px 0;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .header h3, .header h4 {
+      color: #d32f2f;
+      margin: 2px 0;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .details label {
+      font-weight: bold;
+      color: #000;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #b71c1c;
+      border-radius: 6px;
+      background: #fffef9;
+      color: #000;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    input:focus {
+      box-shadow: 0 0 6px rgba(211, 47, 47, 0.6);
+      border-color: #d32f2f;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      border: 1px solid #b71c1c;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid #b71c1c;
+      padding: 5px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #ffebee;
+      color: #b71c1c;
+    }
+
+    .amounts {
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    .amounts label {
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 15px;
+      border-top: 2px solid #d32f2f;
+      padding-top: 10px;
+      text-align: center;
+      font-size: 13px;
+      color: #b71c1c;
+      line-height: 1.3em;
+    }
+
+    .actions {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    button {
+      background: linear-gradient(to right, #d32f2f, #b71c1c);
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #e53935, #c62828);
+      box-shadow: 0 0 10px rgba(211, 47, 47, 0.7);
+    }
+
+    .marathi {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+
+    @media print {
+      body { background: white; }
+      .actions { display: none; }
+      .invoice-container {
+        border: 2px solid #b71c1c;
+        margin: 0;
+        width: 148mm;
+        min-height: 210mm;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="invoice-container">
+    <div class="header">
+      <h1>सावंत ऑप्टीशियन</h1>
+      <h3>Desai Hospital Samor, Doctors Colony, Gadhinglaj</h3>
+      <h4>मोबा. 7498015706 / 9823802576 | Sunday Closed</h4>
+    </div>
+
+    <div class="details">
+      <div>
+        <label>Bill No.:</label>
+        <input type="text" id="billNo" placeholder="Enter Bill No.">
+      </div>
+      <div>
+        <label>Date:</label>
+        <input type="date" id="billDate">
+      </div>
+      <div>
+        <label>Name:</label>
+        <input type="text" id="custName" placeholder="Customer Name">
+      </div>
+      <div>
+        <label>Address:</label>
+        <input type="text" id="custAddr" placeholder="Customer Address">
+      </div>
+      <div>
+        <label>Contact:</label>
+        <input type="text" id="custContact" placeholder="Mobile Number">
+      </div>
+    </div>
+
+    <h3 style="color:#b71c1c; text-align:center; margin-top:15px;">Eye Power Details</h3>
+    <table>
+      <tr>
+        <th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th>
+      </tr>
+      <tr>
+        <td>Right Eye</td>
+        <td><input id="rSph"></td>
+        <td><input id="rCyl"></td>
+        <td><input id="rAxis"></td>
+        <td><input id="rVa"></td>
+      </tr>
+      <tr>
+        <td>Left Eye</td>
+        <td><input id="lSph"></td>
+        <td><input id="lCyl"></td>
+        <td><input id="lAxis"></td>
+        <td><input id="lVa"></td>
+      </tr>
+    </table>
+
+    <h3 style="color:#b71c1c; text-align:center; margin-top:15px;">Description of Goods</h3>
+    <table>
+      <tr><th>Description</th><th>Amount (₹)</th></tr>
+      <tr>
+        <td><input id="frame" placeholder="Frame (e.g., Transparent Metal)"></td>
+        <td><input id="frameAmt" type="number"></td>
+      </tr>
+      <tr>
+        <td><input id="lenses" placeholder="Lenses (e.g., Blue Black 02 Honey)"></td>
+        <td><input id="lensAmt" type="number"></td>
+      </tr>
+    </table>
+
+    <div class="amounts">
+      <p><label>Total:</label> ₹ <span id="total">0</span></p>
+      <p><label>Advance:</label> ₹ <input id="advance" type="number" value="0"></p>
+      <p><label>Balance:</label> ₹ <span id="balance">0</span></p>
+    </div>
+
+    <div class="footer">
+      <p class="marathi">कॉम्प्युटराईज्ड डोळे तपासणी</p>
+      <p>Order once placed cannot be changed or cancelled.</p>
+      <p>Customer Frames Have Their Own Risk of Any Damage at The Time of Fitting / Adjustment Too.</p>
+      <p><b>Thank you, Visit again 🙏</b></p>
+    </div>
+
+    <div class="actions">
+      <button onclick="saveInvoice()">💾 Save</button>
+      <button onclick="validateBeforePrint()">🖨️ Print / Download PDF</button>
+    </div>
+  </div>
+
+  <script>
+    function updateTotals() {
+      const frameAmt = parseFloat(frameAmtEl.value) || 0;
+      const lensAmt = parseFloat(lensAmtEl.value) || 0;
+      const advance = parseFloat(advanceEl.value) || 0;
+      const total = frameAmt + lensAmt;
+      const balance = total - advance;
+      totalEl.textContent = total.toFixed(2);
+      balanceEl.textContent = balance.toFixed(2);
+    }
+
+    const frameAmtEl = document.getElementById('frameAmt');
+    const lensAmtEl = document.getElementById('lensAmt');
+    const advanceEl = document.getElementById('advance');
+    const totalEl = document.getElementById('total');
+    const balanceEl = document.getElementById('balance');
+
+    [frameAmtEl, lensAmtEl, advanceEl].forEach(el => el.addEventListener('input', updateTotals));
+
+    function validateFields() {
+      const requiredIds = [
+        'billNo','custName','custAddr','custContact',
+        'rSph','rCyl','rAxis','lSph','lCyl','lAxis',
+        'frame','frameAmt','lenses','lensAmt'
+      ];
+      for (const id of requiredIds) {
+        const field = document.getElementById(id);
+        if (!field.value.trim()) {
+          field.style.borderColor = 'red';
+          alert(`⚠️ Please fill in the "${id}" field before saving or printing.`);
+          field.focus();
+          return false;
+        } else {
+          field.style.borderColor = '#b71c1c';
+        }
+      }
+      if (!billDate.value) billDate.value = new Date().toISOString().split('T')[0];
+      return true;
+    }
+
+    function saveInvoice() {
+      if (!validateFields()) return;
+      updateTotals();
+
+      const newInvoice = {
+        billNo: billNo.value,
+        billDate: billDate.value,
+        custName: custName.value,
+        custAddr: custAddr.value,
+        custContact: custContact.value,
+        frame: frame.value,
+        frameAmt: frameAmt.value,
+        lenses: lenses.value,
+        lensAmt: lensAmt.value,
+        advance: advance.value,
+        total: totalEl.textContent,
+        balance: balanceEl.textContent,
+        deliveryStatus: "Awaiting Confirmation"
+      };
+
+      localStorage.setItem('lastInvoice', JSON.stringify(newInvoice));
+
+      const bills = JSON.parse(localStorage.getItem('bills')) || [];
+      bills.push(newInvoice);
+      localStorage.setItem('bills', JSON.stringify(bills));
+
+      alert('✅ Invoice saved successfully! You can view it anytime in Bills.');
+    }
+
+    function validateBeforePrint() {
+      if (!validateFields()) return;
+      updateTotals();
+      window.print();
+    }
+
+    window.onload = () => {
+      const saved = JSON.parse(localStorage.getItem('lastInvoice'));
+      if (saved) {
+        billNo.value = saved.billNo;
+        billDate.value = saved.billDate;
+        custName.value = saved.custName;
+        custAddr.value = saved.custAddr;
+        custContact.value = saved.custContact;
+        frame.value = saved.frame;
+        frameAmt.value = saved.frameAmt;
+        lenses.value = saved.lenses;
+        lensAmt.value = saved.lensAmt;
+        advance.value = saved.advance;
+        updateTotals();
+      }
+    };
+  </script>
+</body>
+</html>

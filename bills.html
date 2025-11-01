@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sawant Optician - Bills Tracker</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #fff8dc, #fff3e0);
+    color: #222;
+  }
+
+  header {
+    background: #d32f2f;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  header h2 {
+    margin: 0;
+    font-size: 26px;
+  }
+
+  header small {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .toolbar {
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  .toolbar input {
+    width: 40%;
+    padding: 10px;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  .toolbar button {
+    background: #b71c1c;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+  }
+
+  .toolbar button:hover {
+    background: #9a0007;
+  }
+
+  table {
+    width: 90%;
+    margin: auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  th, td {
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    padding: 10px;
+  }
+
+  th {
+    background-color: #ffebee;
+    color: #b71c1c;
+    font-size: 15px;
+  }
+
+  tr:hover {
+    background: #fffde7;
+  }
+
+  select {
+    border: 1px solid #b71c1c;
+    border-radius: 5px;
+    padding: 5px;
+    background: #fffef5;
+    color: #222;
+  }
+
+  #summary {
+    margin: 20px auto;
+    text-align: center;
+    color: #b71c1c;
+    font-weight: bold;
+    background: #fffde7;
+    width: 90%;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  footer {
+    text-align: center;
+    padding: 15px;
+    background: #fff3e0;
+    margin-top: 30px;
+    color: #555;
+    font-size: 13px;
+    border-top: 2px solid #d32f2f;
+  }
+
+  tr {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+  tr.loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h2>👓 Sawant Optician Billing Center</h2>
+  <small>Track all generated invoices, manage delivery, and export your records</small>
+</header>
+
+<div class="toolbar">
+  <input type="text" id="searchBox" placeholder="🔍 Search by Bill No, Name or Contact...">
+  <button onclick="exportExcel()">📊 Export Excel</button>
+  <button onclick="downloadBackup()">💾 Backup All</button>
+  <button onclick="goBack()">⬅️ Dashboard</button>
+</div>
+
+<table id="billsTable">
+  <thead>
+    <tr>
+      <th>Bill No.</th>
+      <th>Date</th>
+      <th>Name</th>
+      <th>Contact</th>
+      <th>Total (₹)</th>
+      <th>Advance</th>
+      <th>Balance</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div id="summary"></div>
+
+<footer>© 2025 Sawant Optician | Designed with ❤️ by Harshu</footer>
+
+<script>
+  function loadBills() {
+    const tbody = document.querySelector("#billsTable tbody");
+    tbody.innerHTML = "";
+    const bills = JSON.parse(localStorage.getItem("bills")) || [];
+    bills.forEach((b, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${b.billNo}</td>
+        <td>${b.billDate}</td>
+        <td>${b.custName}</td>
+        <td>${b.custContact}</td>
+        <td>${parseFloat(b.total || 0).toFixed(2)}</td>
+        <td>${parseFloat(b.advance || 0).toFixed(2)}</td>
+        <td>${parseFloat(b.balance || 0).toFixed(2)}</td>
+        <td>
+          <select onchange="updateStatus(${i}, this.value)">
+            <option ${b.deliveryStatus === "Awaiting Confirmation" ? "selected" : ""}>Awaiting Confirmation</option>
+            <option ${b.deliveryStatus === "Delivered" ? "selected" : ""}>Delivered</option>
+            <option ${b.deliveryStatus === "Not Delivered" ? "selected" : ""}>Not Delivered</option>
+          </select>
+        </td>
+      `;
+      tbody.appendChild(tr);
+      setTimeout(()=>tr.classList.add("loaded"), 100);
+    });
+    updateSummary();
+  }
+
+  function updateStatus(index, value) {
+    const bills = JSON.parse(localStorage.getItem("bills")) || [];
+    bills[index].deliveryStatus = value;
+    localStorage.setItem("bills", JSON.stringify(bills));
+    updateSummary();
+  }
+
+  function exportExcel() {
+    const bills = JSON.parse(localStorage.getItem("bills")) || [];
+    if (!bills.length) return alert("No bills to export!");
+    let csv = "Bill No,Date,Name,Contact,Total,Advance,Balance,Status\n";
+    bills.forEach(b => {
+      csv += `${b.billNo},${b.billDate},${b.custName},${b.custContact},${b.total},${b.advance},${b.balance},${b.deliveryStatus}\n`;
+    });
+    const blob = new Blob([csv], {type: "text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "SawantOptician_Bills.csv";
+    a.click();
+  }
+
+  function downloadBackup() {
+    const bills = localStorage.getItem("bills");
+    if (!bills) return alert("No bills found to backup!");
+    const blob = new Blob([bills], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'SawantOptician_Bills_Backup.json';
+    a.click();
+  }
+
+  function goBack() {
+    window.location.href = "dashboard.html";
+  }
+
+  document.getElementById("searchBox").addEventListener("input", (e) => {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll("#billsTable tbody tr").forEach(tr => {
+      const text = tr.textContent.toLowerCase();
+      tr.style.display = text.includes(term) ? "" : "none";
+    });
+  });
+
+  function updateSummary() {
+    const bills = JSON.parse(localStorage.getItem('bills')) || [];
+    const totalAmt = bills.reduce((sum, b) => sum + parseFloat(b.total || 0), 0);
+    const pending = bills.filter(b => b.deliveryStatus === "Awaiting Confirmation").length;
+    document.getElementById('summary').innerHTML =
+      `Total Bills: ${bills.length} | Total Amount: ₹${totalAmt.toFixed(2)} | Pending Deliveries: ${pending}`;
+  }
+
+  loadBills();
+</script>
+</body>
+</html>

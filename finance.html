@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sawant Optician — Finance Monitor</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- xlsx for Excel export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- html2canvas + jsPDF for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#f0f0f0; --card:#fff; --accent:#c7b46b; --muted:#666; --shadow: rgba(0,0,0,0.08);
+      font-family: "Poppins","Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(135deg,var(--bg),#e0e0e0);color:#111}
+    header{background:var(--card);padding:16px 28px;box-shadow:0 4px 16px var(--shadow);display:flex;justify-content:space-between;align-items:center}
+    header .left{display:flex;gap:12px;align-items:center}
+    .logo{width:46px}
+    h1{margin:0;font-size:18px}
+    .btn{background:var(--accent);border:none;color:#111;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+    .layout{max-width:1100px;margin:28px auto;padding:0 18px;display:grid;grid-template-columns:1fr;gap:18px}
+    .row{display:flex;gap:18px;align-items:stretch}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 8px 24px var(--shadow);flex:1}
+    .cards{display:flex;gap:18px}
+    .stat{display:flex;flex-direction:column;gap:6px}
+    .stat .val{font-weight:800;font-size:20px;color:#111}
+    .muted{color:var(--muted);font-size:13px}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+    input,select{padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fafafa}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:center;font-size:14px}
+    th{background:#fafafa}
+    .actions button{margin:0 6px;padding:6px 8px;border-radius:6px;border:none;cursor:pointer}
+    .actions .edit{background:#2b7ac9;color:#fff}
+    .actions .del{background:#d9534f;color:#fff}
+    .top-actions{display:flex;gap:10px;align-items:center}
+    .small{font-size:13px;color:var(--muted)}
+    .chart-wrap{height:320px}
+    footer{max-width:1100px;margin:12px auto 50px;padding:8px;text-align:center;color:#666}
+    @media(max-width:900px){
+      .row{flex-direction:column}
+      .cards{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="left">
+      <img class="logo" src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="RS Opticals">
+      <div>
+        <h1>Finance Monitor — Sawant Optician</h1>
+        <div class="small">Track income, expenses and profit — local only (stored in your browser)</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="btn" onclick="location.href='dashboard.html'">← Dashboard</button>
+      <button class="btn" id="exportExcelBtn">Export Excel</button>
+      <button class="btn" id="exportPdfBtn">Export PDF</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Summary cards -->
+    <div class="cards">
+      <div class="card stat">
+        <div class="small">Total Income (₹)</div>
+        <div id="totalIncome" class="val">0.00</div>
+        <div class="small">Enter individual monthly incomes below</div>
+      </div>
+
+      <div class="card stat">
+        <div class="small">Total Expenses (₹)</div>
+        <div id="totalExpenses" class="val">0.00</div>
+        <div class="small">Expenses stored locally</div>
+      </div>
+
+      <div class="card stat">
+        <div class="small">Net Profit (₹)</div>
+        <div id="netProfit" class="val">0.00</div>
+        <div class="small">Income − Expenses</div>
+      </div>
+    </div>
+
+    <!-- Add monthly data -->
+    <div class="row">
+      <div class="card" style="flex:0.6">
+        <h3 style="margin-top:0">Add / Edit Monthly Record</h3>
+        <div class="form-grid">
+          <select id="monthSelect">
+            <option value="">-- Select Month --</option>
+            <option value="2025-01">2025-01</option><option value="2025-02">2025-02</option>
+            <option value="2025-03">2025-03</option><option value="2025-04">2025-04</option>
+            <option value="2025-05">2025-05</option><option value="2025-06">2025-06</option>
+            <option value="2025-07">2025-07</option><option value="2025-08">2025-08</option>
+            <option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+            <option value="2025-11">2025-11</option><option value="2025-12">2025-12</option>
+          </select>
+          <input id="incomeInput" type="number" placeholder="Income (₹)" step="0.01" />
+          <input id="expenseInput" type="number" placeholder="Expenses (₹)" step="0.01" />
+          <div style="display:flex;gap:8px">
+            <button id="addBtn" class="btn" style="flex:1">Save / Update</button>
+            <button id="clearBtn" style="flex:0.5;background:#ddd;border-radius:8px;border:none;cursor:pointer">Clear</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="small">Tip: Choose month then save. Records persist locally (in this browser).</div>
+      </div>
+
+      <div class="card" style="flex:1">
+        <h3 style="margin-top:0">Income vs Expenses (Monthly)</h3>
+        <div class="chart-wrap"><canvas id="financeChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <h3 style="margin-top:0">Monthly Summary</h3>
+      <table id="summaryTable">
+        <thead>
+          <tr><th>Month</th><th>Income (₹)</th><th>Expenses (₹)</th><th>Profit (₹)</th><th>Actions</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>© 2025 Sawant Optician — Finance Monitor (Local)</footer>
+
+<script>
+/* ---------- storage key and helpers ---------- */
+const STORAGE_KEY = 'sawant_finance_v1';
+function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e){ return {}; } }
+function saveData(obj){ localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); }
+
+/* ---------- initial state ---------- */
+let data = loadData(); // structure: { "2025-01": {income: 0, expenses:0}, ... }
+
+/* ---------- DOM refs ---------- */
+const monthSelect = document.getElementById('monthSelect');
+const incomeInput = document.getElementById('incomeInput');
+const expenseInput = document.getElementById('expenseInput');
+const addBtn = document.getElementById('addBtn');
+const clearBtn = document.getElementById('clearBtn');
+const tbody = document.querySelector('#summaryTable tbody');
+const totalIncomeEl = document.getElementById('totalIncome');
+const totalExpensesEl = document.getElementById('totalExpenses');
+const netProfitEl = document.getElementById('netProfit');
+const exportExcelBtn = document.getElementById('exportExcelBtn');
+const exportPdfBtn = document.getElementById('exportPdfBtn');
+
+/* ---------- Chart setup ---------- */
+const ctx = document.getElementById('financeChart').getContext('2d');
+let chart = null;
+function drawChart(labels, incomeArr, expenseArr){
+  if(chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type:'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Income', data: incomeArr, borderColor:'#2e7d32', backgroundColor:'rgba(46,125,50,0.08)', tension:0.3, fill:true },
+        { label: 'Expenses', data: expenseArr, borderColor:'#c62828', backgroundColor:'rgba(198,40,40,0.06)', tension:0.3, fill:true }
+      ]
+    },
+    options: {
+      responsive:true,
+      plugins:{ legend:{position:'top'} },
+      scales:{ x:{ ticks:{color:'#444'}}, y:{ ticks:{color:'#444'} } }
+    }
+  });
+}
+
+/* ---------- render table & summary ---------- */
+function renderAll(){
+  // sort months ascending
+  const months = Object.keys(data).sort();
+  tbody.innerHTML = '';
+  let totIncome=0, totExpenses=0;
+  const labels = [], incomes = [], expensesArr = [];
+
+  months.forEach(m=>{
+    const rec = data[m];
+    const income = Number(rec.income)||0;
+    const expenses = Number(rec.expenses)||0;
+    const profit = Math.round((income - expenses)*100)/100;
+    totIncome += income;
+    totExpenses += expenses;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${m}</td>
+                    <td>₹${income.toFixed(2)}</td>
+                    <td>₹${expenses.toFixed(2)}</td>
+                    <td>₹${profit.toFixed(2)}</td>
+                    <td class="actions">
+                      <button class="edit" onclick="editRecord('${m}')">Edit</button>
+                      <button class="del" onclick="deleteRecord('${m}')">Delete</button>
+                    </td>`;
+    tbody.appendChild(tr);
+
+    labels.push(m);
+    incomes.push(income);
+    expensesArr.push(expenses);
+  });
+
+  // update summary
+  totalIncomeEl.innerText = (Math.round(totIncome*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  totalExpensesEl.innerText = (Math.round(totExpenses*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  netProfitEl.innerText = (Math.round((totIncome - totExpenses)*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  // draw chart (if no data, show placeholders 12 months)
+  if(labels.length === 0){
+    const nowYear = (new Date()).getFullYear();
+    const placeholderLabels = [];
+    for(let i=1;i<=12;i++){
+      const mm = i.toString().padStart(2,'0');
+      placeholderLabels.push(`${nowYear}-${mm}`);
+    }
+    drawChart(placeholderLabels, Array(12).fill(0), Array(12).fill(0));
+  } else {
+    drawChart(labels, incomes, expensesArr);
+  }
+}
+
+/* ---------- add / update record ---------- */
+addBtn.addEventListener('click', ()=>{
+  const month = monthSelect.value;
+  const income = parseFloat(incomeInput.value) || 0;
+  const expenses = parseFloat(expenseInput.value) || 0;
+  if(!month){ alert('Please select a month'); return; }
+  data[month] = { income, expenses };
+  saveData(data);
+  monthSelect.value=''; incomeInput.value=''; expenseInput.value='';
+  renderAll();
+});
+
+/* ---------- edit / delete ---------- */
+function editRecord(month){
+  const rec = data[month];
+  if(!rec) return;
+  monthSelect.value = month;
+  incomeInput.value = rec.income;
+  expenseInput.value = rec.expenses;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function deleteRecord(month){
+  if(!confirm('Delete record for '+month+'?')) return;
+  delete data[month];
+  saveData(data);
+  renderAll();
+}
+
+/* ---------- clear inputs ---------- */
+clearBtn.addEventListener('click', ()=>{
+  monthSelect.value=''; incomeInput.value=''; expenseInput.value='';
+});
+
+/* ---------- export Excel ---------- */
+exportExcelBtn.addEventListener('click', ()=>{
+  const rows = [['Month','Income','Expenses','Profit']];
+  Object.keys(data).sort().forEach(m=>{
+    const rec = data[m];
+    const income = Number(rec.income)||0;
+    const expenses = Number(rec.expenses)||0;
+    rows.push([m, income, expenses, (income - expenses)]);
+  });
+  if(rows.length===1){ alert('No data to export'); return; }
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Finance');
+  XLSX.writeFile(wb, 'finance_report.xlsx');
+});
+
+/* ---------- export PDF (capture the main layout) ---------- */
+exportPdfBtn.addEventListener('click', async ()=>{
+  // capture the main layout (the layout element) - increase scale for clarity
+  const layout = document.querySelector('main.layout');
+  const scale = 2;
+  const canvas = await html2canvas(layout, { scale, useCORS:true, backgroundColor:'#ffffff' });
+  const imgData = canvas.toDataURL('image/jpeg', 1.0);
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({orientation:'portrait', unit:'pt', format:'a4'});
+  const pdfW = pdf.internal.pageSize.getWidth();
+  const pdfH = (canvas.height * pdfW) / canvas.width;
+  if(pdfH <= pdf.internal.pageSize.getHeight()){
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+  } else {
+    const pageHeightPx = Math.floor(canvas.height * (pdf.internal.pageSize.getHeight() / pdfH));
+    let y = 0;
+    while(y < canvas.height){
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = Math.min(pageHeightPx, canvas.height - y);
+      const ctx = pageCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, y, pageCanvas.width, pageCanvas.height, 0, 0, pageCanvas.width, pageCanvas.height);
+      const pageImg = pageCanvas.toDataURL('image/jpeg',1.0);
+      const hForPdf = (pageCanvas.height * pdfW) / pageCanvas.width;
+      if(y===0) pdf.addImage(pageImg, 'JPEG', 0, 0, pdfW, hForPdf);
+      else { pdf.addPage(); pdf.addImage(pageImg, 'JPEG', 0, 0, pdfW, hForPdf); }
+      y += pageCanvas.height;
+    }
+  }
+  pdf.save('finance_report.pdf');
+});
+
+/* ---------- init ---------- */
+renderAll();
+
+</script>
+</body>
+</html>

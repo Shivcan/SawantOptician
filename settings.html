@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sawant Optician - Settings</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f6f6f6, #e9e9e9);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .back-btn {
+      background-color: #d4af37;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .back-btn:hover {
+      background-color: #b9932a;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #444;
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 8px;
+      margin-top: 30px;
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+      justify-content: flex-end;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s ease;
+    }
+
+    .save-btn {
+      background-color: #d4af37;
+      color: white;
+    }
+    .save-btn:hover {
+      background-color: #b9932a;
+    }
+
+    .reset-btn {
+      background-color: #6c757d;
+      color: white;
+    }
+    .reset-btn:hover {
+      background-color: #5a6268;
+    }
+
+    .clear-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+    .clear-btn:hover {
+      background-color: #b02a37;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .toggle input {
+      width: auto;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚙️ Settings - Sawant Optician</h1>
+    <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+  </header>
+
+  <div class="container">
+    <!-- Profile Settings -->
+    <div class="section">
+      <h2>🧍‍♂️ Profile Settings</h2>
+      <label>Owner Name</label>
+      <input type="text" id="ownerName" placeholder="Mr. Sawant" />
+
+      <label>Shop Name</label>
+      <input type="text" id="shopName" placeholder="Sawant Optician" />
+
+      <label>Contact Number</label>
+      <input type="text" id="contact" placeholder="+91 9876543210" />
+
+      <label>Email</label>
+      <input type="email" id="email" placeholder="example@gmail.com" />
+
+      <label>Shop Address</label>
+      <textarea id="address" rows="2" placeholder="Near Desai Hospital, Hospital Colony, Gadhinglaj"></textarea>
+    </div>
+
+    <!-- Billing Preferences -->
+    <div class="section">
+      <h2>🧾 Billing Preferences</h2>
+      <label>Default Notes</label>
+      <textarea id="notes" rows="2" placeholder="Order once placed cannot be changed or cancelled."></textarea>
+
+      <label>Footer Message</label>
+      <input type="text" id="footerText" placeholder="Thank you for choosing Sawant Optician 👓" />
+
+      <label>Tax Percentage</label>
+      <input type="number" id="taxPercent" placeholder="5" />
+
+      <div class="toggle">
+        <input type="checkbox" id="showTax" />
+        <label for="showTax">Show tax section on bills</label>
+      </div>
+    </div>
+
+    <!-- Financial Settings -->
+    <div class="section">
+      <h2>💰 Financial Settings</h2>
+      <label>Default Currency</label>
+      <select id="currency">
+        <option value="₹">₹ (INR)</option>
+        <option value="$">$ (USD)</option>
+        <option value="€">€ (EUR)</option>
+      </select>
+
+      <label>Monthly Expense Limit (₹)</label>
+      <input type="number" id="expenseLimit" placeholder="50000" />
+    </div>
+
+    <!-- Appearance -->
+    <div class="section">
+      <h2>🎨 Appearance</h2>
+      <label>Theme Color</label>
+      <select id="themeColor">
+        <option value="gold">Gold Accent</option>
+        <option value="blue">Royal Blue</option>
+        <option value="dark">Dark Mode</option>
+      </select>
+    </div>
+
+    <!-- Security -->
+    <div class="section">
+      <h2>🔐 Security</h2>
+      <label>Current Password</label>
+      <input type="password" id="currentPass" placeholder="Enter current password" />
+
+      <label>New Password</label>
+      <input type="password" id="newPass" placeholder="Enter new password" />
+
+      <label>Confirm New Password</label>
+      <input type="password" id="confirmPass" placeholder="Confirm new password" />
+
+      <div class="toggle">
+        <input type="checkbox" id="autoLogout" />
+        <label for="autoLogout">Enable auto logout after inactivity</label>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-group">
+      <button class="save-btn" onclick="saveSettings()">💾 Save Settings</button>
+      <button class="reset-btn" onclick="resetDefaults()">↩ Reset to Default</button>
+      <button class="clear-btn" onclick="clearData()">🗑 Clear All Data</button>
+    </div>
+  </div>
+
+  <footer>© 2025 Sawant Optician | Settings Panel | Made with ❤️</footer>
+
+  <script>
+    const fields = [
+      "ownerName", "shopName", "contact", "email", "address",
+      "notes", "footerText", "taxPercent", "showTax",
+      "currency", "expenseLimit", "themeColor",
+      "autoLogout", "currentPass", "newPass", "confirmPass"
+    ];
+
+    function loadSettings() {
+      const data = JSON.parse(localStorage.getItem("settings")) || {};
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.type === "checkbox") el.checked = data[id] || false;
+        else el.value = data[id] || "";
+      });
+    }
+
+    function saveSettings() {
+      const data = {};
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        data[id] = el.type === "checkbox" ? el.checked : el.value;
+      });
+      localStorage.setItem("settings", JSON.stringify(data));
+      alert("✅ Settings saved successfully!");
+    }
+
+    function resetDefaults() {
+      if (confirm("Reset to default settings?")) {
+        localStorage.removeItem("settings");
+        location.reload();
+      }
+    }
+
+    function clearData() {
+      if (confirm("This will clear all app data (bills, inventory, etc). Continue?")) {
+        localStorage.clear();
+        alert("🗑 All data cleared!");
+        location.reload();
+      }
+    }
+
+    function goBack() {
+      window.location.href = "dashboard.html";
+    }
+
+    window.onload = loadSettings;
+  </script>
+</body>
+</html>
