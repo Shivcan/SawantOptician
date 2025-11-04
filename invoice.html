@@ -145,6 +145,55 @@
       font-weight: bold;
     }
 
+    /* New Eye Power Section Styling */
+    .eye-section {
+      margin-top: 20px;
+      border: 1.5px solid #b71c1c;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fffdf7;
+    }
+
+    .eye-section h3 {
+      text-align: center;
+      color: #b71c1c;
+      margin-bottom: 10px;
+    }
+
+    .eye-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .eye-box {
+      border: 1px solid #b71c1c;
+      border-radius: 6px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .eye-box h4 {
+      background-color: #ffebee;
+      color: #b71c1c;
+      padding: 5px;
+      text-align: center;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .eye-box table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .eye-box th, .eye-box td {
+      border: 1px solid #b71c1c;
+      padding: 4px;
+      text-align: center;
+    }
+
     @media print {
       body { background: white; }
       .actions { display: none; }
@@ -190,26 +239,53 @@
       </div>
     </div>
 
-    <h3 style="color:#b71c1c; text-align:center; margin-top:15px;">Eye Power Details</h3>
-    <table>
-      <tr>
-        <th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th>
-      </tr>
-      <tr>
-        <td>Right Eye</td>
-        <td><input id="rSph"></td>
-        <td><input id="rCyl"></td>
-        <td><input id="rAxis"></td>
-        <td><input id="rVa"></td>
-      </tr>
-      <tr>
-        <td>Left Eye</td>
-        <td><input id="lSph"></td>
-        <td><input id="lCyl"></td>
-        <td><input id="lAxis"></td>
-        <td><input id="lVa"></td>
-      </tr>
-    </table>
+    <!-- 👁️ New Eye Power Section -->
+    <div class="eye-section">
+      <h3>Eye Power Details</h3>
+      <div class="eye-grid">
+        <div class="eye-box">
+          <h4>Right Eye</h4>
+          <table>
+            <tr><th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th></tr>
+            <tr>
+              <td>Dist</td>
+              <td><input id="rSphDist"></td>
+              <td><input id="rCylDist"></td>
+              <td><input id="rAxisDist"></td>
+              <td><input id="rVaDist"></td>
+            </tr>
+            <tr>
+              <td>Near</td>
+              <td><input id="rSphNear"></td>
+              <td><input id="rCylNear"></td>
+              <td><input id="rAxisNear"></td>
+              <td><input id="rVaNear"></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="eye-box">
+          <h4>Left Eye</h4>
+          <table>
+            <tr><th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th></tr>
+            <tr>
+              <td>Dist</td>
+              <td><input id="lSphDist"></td>
+              <td><input id="lCylDist"></td>
+              <td><input id="lAxisDist"></td>
+              <td><input id="lVaDist"></td>
+            </tr>
+            <tr>
+              <td>Near</td>
+              <td><input id="lSphNear"></td>
+              <td><input id="lCylNear"></td>
+              <td><input id="lAxisNear"></td>
+              <td><input id="lVaNear"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <h3 style="color:#b71c1c; text-align:center; margin-top:15px;">Description of Goods</h3>
     <table>
@@ -244,6 +320,12 @@
   </div>
 
   <script>
+    const frameAmtEl = document.getElementById('frameAmt');
+    const lensAmtEl = document.getElementById('lensAmt');
+    const advanceEl = document.getElementById('advance');
+    const totalEl = document.getElementById('total');
+    const balanceEl = document.getElementById('balance');
+
     function updateTotals() {
       const frameAmt = parseFloat(frameAmtEl.value) || 0;
       const lensAmt = parseFloat(lensAmtEl.value) || 0;
@@ -254,18 +336,11 @@
       balanceEl.textContent = balance.toFixed(2);
     }
 
-    const frameAmtEl = document.getElementById('frameAmt');
-    const lensAmtEl = document.getElementById('lensAmt');
-    const advanceEl = document.getElementById('advance');
-    const totalEl = document.getElementById('total');
-    const balanceEl = document.getElementById('balance');
-
     [frameAmtEl, lensAmtEl, advanceEl].forEach(el => el.addEventListener('input', updateTotals));
 
     function validateFields() {
       const requiredIds = [
         'billNo','custName','custAddr','custContact',
-        'rSph','rCyl','rAxis','lSph','lCyl','lAxis',
         'frame','frameAmt','lenses','lensAmt'
       ];
       for (const id of requiredIds) {
@@ -309,7 +384,7 @@
       bills.push(newInvoice);
       localStorage.setItem('bills', JSON.stringify(bills));
 
-      alert('✅ Invoice saved successfully! You can view it anytime in Bills.');
+      alert('✅ Invoice saved successfully!');
     }
 
     function validateBeforePrint() {
