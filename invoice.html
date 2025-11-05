@@ -92,6 +92,41 @@
       color: #b71c1c;
     }
 
+    /* Eye Power Layout */
+    .eye-section {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .eye-box {
+      flex: 1;
+      border: 1px solid #b71c1c;
+      border-radius: 6px;
+      padding: 4px;
+      background: #fffdfa;
+    }
+
+    .eye-box h4 {
+      color: #b71c1c;
+      text-align: center;
+      margin: 2px 0;
+      font-size: 13px;
+    }
+
+    .eye-box table {
+      width: 100%;
+      font-size: 12px;
+      border: none;
+    }
+
+    .eye-box th, .eye-box td {
+      border: 1px solid #b71c1c;
+      padding: 3px;
+    }
+
     .amounts {
       margin-top: 6px;
       font-size: 13px;
@@ -178,70 +213,48 @@
     <div class="header">
       <h1>सावंत ऑप्टीशियन</h1>
       <h3>Desai Hospital Samor, Doctors Colony, Gadhinglaj</h3>
-      <h4>मोबा. 7498015706 / +91 74992 07571 | Sunday Closed</h4>
+      <h4>मोबा. 7499207571 / 9823802576 | Sunday Closed</h4>
     </div>
 
     <div class="details">
-      <div>
-        <label>Bill No.:</label>
-        <input type="text" id="billNo">
-      </div>
-      <div>
-        <label>Date:</label>
-        <input type="date" id="billDate">
-      </div>
+      <div><label>Bill No.:</label><input type="text" id="billNo"></div>
+      <div><label>Date:</label><input type="date" id="billDate"></div>
       <div class="name-age" style="grid-column: span 2;">
-        <div style="flex:2">
-          <label>Name:</label>
-          <input type="text" id="custName">
-        </div>
-        <div style="flex:1">
-          <label>Age:</label>
-          <input type="number" id="custAge">
-        </div>
+        <div style="flex:2"><label>Name:</label><input type="text" id="custName"></div>
+        <div style="flex:1"><label>Age:</label><input type="number" id="custAge"></div>
       </div>
-      <div>
-        <label>Address:</label>
-        <input type="text" id="custAddr">
-      </div>
-      <div>
-        <label>Contact:</label>
-        <input type="text" id="custContact">
-      </div>
+      <div><label>Address:</label><input type="text" id="custAddr"></div>
+      <div><label>Contact:</label><input type="text" id="custContact"></div>
     </div>
 
     <h3 style="color:#b71c1c; text-align:center; margin-top:5px;">Eye Power Details</h3>
-    <table>
-      <tr>
-        <th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th>
-      </tr>
-      <tr>
-        <td>Right Eye</td>
-        <td><input id="rSph"></td>
-        <td><input id="rCyl"></td>
-        <td><input id="rAxis"></td>
-        <td><input id="rVa"></td>
-      </tr>
-      <tr>
-        <td>Left Eye</td>
-        <td><input id="lSph"></td>
-        <td><input id="lCyl"></td>
-        <td><input id="lAxis"></td>
-        <td><input id="lVa"></td>
-      </tr>
-    </table>
 
-    <h3 style="color:#b71c1c; text-align:center; margin-top:5px;">Description of Goods</h3>
+    <!-- SIDE-BY-SIDE EYE SECTION -->
+    <div class="eye-section">
+      <div class="eye-box">
+        <h4>Right Eye</h4>
+        <table>
+          <tr><th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th></tr>
+          <tr><td>Dist</td><td><input id="rDistSph"></td><td><input id="rDistCyl"></td><td><input id="rDistAxis"></td><td><input id="rDistVa"></td></tr>
+          <tr><td>Near</td><td><input id="rNearSph"></td><td><input id="rNearCyl"></td><td><input id="rNearAxis"></td><td><input id="rNearVa"></td></tr>
+        </table>
+      </div>
+
+      <div class="eye-box">
+        <h4>Left Eye</h4>
+        <table>
+          <tr><th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th></tr>
+          <tr><td>Dist</td><td><input id="lDistSph"></td><td><input id="lDistCyl"></td><td><input id="lDistAxis"></td><td><input id="lDistVa"></td></tr>
+          <tr><td>Near</td><td><input id="lNearSph"></td><td><input id="lNearCyl"></td><td><input id="lNearAxis"></td><td><input id="lNearVa"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h3 style="color:#b71c1c; text-align:center; margin-top:8px;">Description of Goods</h3>
     <table>
       <tr><th>Description</th><th>Amount (₹)</th></tr>
-      <tr>
-        <td><input id="frame" placeholder="Frame"></td>
-        <td><input id="frameAmt" type="number"></td>
-      </tr>
-      <tr>
-        <td><input id="lenses" placeholder="Lenses"></td>
-        <td><input id="lensAmt" type="number"></td>
-      </tr>
+      <tr><td><input id="frame" placeholder="Frame"></td><td><input id="frameAmt" type="number"></td></tr>
+      <tr><td><input id="lenses" placeholder="Lenses"></td><td><input id="lensAmt" type="number"></td></tr>
     </table>
 
     <div class="amounts">
