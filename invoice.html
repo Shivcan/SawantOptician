@@ -9,9 +9,10 @@
       background: linear-gradient(to bottom right, #fff8dc, #fff3e0);
       font-family: 'Poppins', sans-serif;
       margin: 0;
-      padding: 30px 10px;
+      padding: 10px;
       display: flex;
       justify-content: center;
+      align-items: flex-start;
       min-height: 100vh;
     }
 
@@ -19,77 +20,70 @@
       width: 148mm;
       min-height: 210mm;
       background: #fffef2;
-      border: 3px solid #d32f2f;
-      padding: 20px;
-      border-radius: 12px;
+      border: 2px solid #d32f2f;
+      padding: 10px 15px;
+      border-radius: 10px;
       color: #000;
-      box-shadow: 0 6px 20px rgba(211, 47, 47, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .invoice-container:hover {
-      transform: scale(1.01);
-      box-shadow: 0 8px 25px rgba(211, 47, 47, 0.45);
+      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+      page-break-inside: avoid;
+      font-size: 13px;
     }
 
     .header {
       text-align: center;
-      border-bottom: 3px solid #d32f2f;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
+      border-bottom: 2px solid #d32f2f;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
     }
 
     .header h1 {
       color: #b71c1c;
-      font-size: 30px;
-      margin: 5px 0;
+      font-size: 26px;
+      margin: 4px 0;
       font-weight: 800;
-      letter-spacing: 1px;
     }
 
     .header h3, .header h4 {
       color: #d32f2f;
       margin: 2px 0;
+      font-size: 13px;
     }
 
     .details {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 5px;
+      margin-bottom: 5px;
     }
 
     .details label {
       font-weight: bold;
       color: #000;
+      font-size: 12px;
     }
 
     input, textarea {
       width: 100%;
-      padding: 6px;
+      padding: 4px;
       border: 1px solid #b71c1c;
-      border-radius: 6px;
+      border-radius: 4px;
       background: #fffef9;
       color: #000;
       outline: none;
-      transition: 0.2s ease;
-    }
-
-    input:focus {
-      box-shadow: 0 0 6px rgba(211, 47, 47, 0.6);
-      border-color: #d32f2f;
+      font-size: 12px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      margin-top: 5px;
       border: 1px solid #b71c1c;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     th, td {
       border: 1px solid #b71c1c;
-      padding: 5px;
+      padding: 4px;
       text-align: center;
     }
 
@@ -99,8 +93,8 @@
     }
 
     .amounts {
-      margin-top: 10px;
-      font-size: 15px;
+      margin-top: 6px;
+      font-size: 13px;
     }
 
     .amounts label {
@@ -108,36 +102,36 @@
     }
 
     .footer {
-      margin-top: 15px;
+      margin-top: 8px;
       border-top: 2px solid #d32f2f;
-      padding-top: 10px;
+      padding-top: 5px;
       text-align: center;
-      font-size: 13px;
+      font-size: 11px;
       color: #b71c1c;
-      line-height: 1.3em;
+      line-height: 1.2em;
     }
 
     .actions {
-      margin-top: 15px;
+      margin-top: 8px;
       text-align: center;
     }
 
     button {
       background: linear-gradient(to right, #d32f2f, #b71c1c);
       color: white;
-      padding: 10px 20px;
-      margin: 5px;
+      padding: 6px 12px;
+      margin: 3px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      letter-spacing: 0.5px;
-      transition: all 0.3s ease;
+      font-size: 12px;
+      transition: 0.2s ease;
     }
 
     button:hover {
       background: linear-gradient(to right, #e53935, #c62828);
-      box-shadow: 0 0 10px rgba(211, 47, 47, 0.7);
+      box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
     }
 
     .marathi {
@@ -145,64 +139,35 @@
       font-weight: bold;
     }
 
-    /* New Eye Power Section Styling */
-    .eye-section {
-      margin-top: 20px;
-      border: 1.5px solid #b71c1c;
-      border-radius: 8px;
-      padding: 10px;
-      background: #fffdf7;
-    }
-
-    .eye-section h3 {
-      text-align: center;
-      color: #b71c1c;
-      margin-bottom: 10px;
-    }
-
-    .eye-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .eye-box {
-      border: 1px solid #b71c1c;
-      border-radius: 6px;
-      padding: 10px;
-      background: #fff;
-    }
-
-    .eye-box h4 {
-      background-color: #ffebee;
-      color: #b71c1c;
-      padding: 5px;
-      text-align: center;
-      border-radius: 4px;
-      margin-bottom: 8px;
-    }
-
-    .eye-box table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    .eye-box th, .eye-box td {
-      border: 1px solid #b71c1c;
-      padding: 4px;
-      text-align: center;
+    .name-age {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
 
     @media print {
-      body { background: white; }
-      .actions { display: none; }
-      .invoice-container {
-        border: 2px solid #b71c1c;
+      body {
+        background: white;
         margin: 0;
+        padding: 0;
+      }
+
+      .actions {
+        display: none;
+      }
+
+      .invoice-container {
         width: 148mm;
         min-height: 210mm;
+        border: 1px solid #b71c1c;
+        margin: 0 auto;
         box-shadow: none;
+        page-break-after: avoid;
+        padding: 8px 12px;
+      }
+
+      table, th, td {
+        border-width: 0.8px;
       }
     }
   </style>
@@ -219,83 +184,62 @@
     <div class="details">
       <div>
         <label>Bill No.:</label>
-        <input type="text" id="billNo" placeholder="Enter Bill No.">
+        <input type="text" id="billNo">
       </div>
       <div>
         <label>Date:</label>
         <input type="date" id="billDate">
       </div>
-      <div>
-        <label>Name:</label>
-        <input type="text" id="custName" placeholder="Customer Name">
+      <div class="name-age" style="grid-column: span 2;">
+        <div style="flex:2">
+          <label>Name:</label>
+          <input type="text" id="custName">
+        </div>
+        <div style="flex:1">
+          <label>Age:</label>
+          <input type="number" id="custAge">
+        </div>
       </div>
       <div>
         <label>Address:</label>
-        <input type="text" id="custAddr" placeholder="Customer Address">
+        <input type="text" id="custAddr">
       </div>
       <div>
         <label>Contact:</label>
-        <input type="text" id="custContact" placeholder="Mobile Number">
+        <input type="text" id="custContact">
       </div>
     </div>
 
-    <!-- 👁️ New Eye Power Section -->
-    <div class="eye-section">
-      <h3>Eye Power Details</h3>
-      <div class="eye-grid">
-        <div class="eye-box">
-          <h4>Right Eye</h4>
-          <table>
-            <tr><th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th></tr>
-            <tr>
-              <td>Dist</td>
-              <td><input id="rSphDist"></td>
-              <td><input id="rCylDist"></td>
-              <td><input id="rAxisDist"></td>
-              <td><input id="rVaDist"></td>
-            </tr>
-            <tr>
-              <td>Near</td>
-              <td><input id="rSphNear"></td>
-              <td><input id="rCylNear"></td>
-              <td><input id="rAxisNear"></td>
-              <td><input id="rVaNear"></td>
-            </tr>
-          </table>
-        </div>
+    <h3 style="color:#b71c1c; text-align:center; margin-top:5px;">Eye Power Details</h3>
+    <table>
+      <tr>
+        <th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th>
+      </tr>
+      <tr>
+        <td>Right Eye</td>
+        <td><input id="rSph"></td>
+        <td><input id="rCyl"></td>
+        <td><input id="rAxis"></td>
+        <td><input id="rVa"></td>
+      </tr>
+      <tr>
+        <td>Left Eye</td>
+        <td><input id="lSph"></td>
+        <td><input id="lCyl"></td>
+        <td><input id="lAxis"></td>
+        <td><input id="lVa"></td>
+      </tr>
+    </table>
 
-        <div class="eye-box">
-          <h4>Left Eye</h4>
-          <table>
-            <tr><th></th><th>Sph</th><th>Cyl</th><th>Axis</th><th>VA</th></tr>
-            <tr>
-              <td>Dist</td>
-              <td><input id="lSphDist"></td>
-              <td><input id="lCylDist"></td>
-              <td><input id="lAxisDist"></td>
-              <td><input id="lVaDist"></td>
-            </tr>
-            <tr>
-              <td>Near</td>
-              <td><input id="lSphNear"></td>
-              <td><input id="lCylNear"></td>
-              <td><input id="lAxisNear"></td>
-              <td><input id="lVaNear"></td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <h3 style="color:#b71c1c; text-align:center; margin-top:15px;">Description of Goods</h3>
+    <h3 style="color:#b71c1c; text-align:center; margin-top:5px;">Description of Goods</h3>
     <table>
       <tr><th>Description</th><th>Amount (₹)</th></tr>
       <tr>
-        <td><input id="frame" placeholder="Frame (e.g., Transparent Metal)"></td>
+        <td><input id="frame" placeholder="Frame"></td>
         <td><input id="frameAmt" type="number"></td>
       </tr>
       <tr>
-        <td><input id="lenses" placeholder="Lenses (e.g., Blue Black 02 Honey)"></td>
+        <td><input id="lenses" placeholder="Lenses"></td>
         <td><input id="lensAmt" type="number"></td>
       </tr>
     </table>
@@ -315,7 +259,7 @@
 
     <div class="actions">
       <button onclick="saveInvoice()">💾 Save</button>
-      <button onclick="validateBeforePrint()">🖨️ Print / Download PDF</button>
+      <button onclick="window.print()">🖨️ Print / Download PDF</button>
     </div>
   </div>
 
@@ -338,34 +282,13 @@
 
     [frameAmtEl, lensAmtEl, advanceEl].forEach(el => el.addEventListener('input', updateTotals));
 
-    function validateFields() {
-      const requiredIds = [
-        'billNo','custName','custAddr','custContact',
-        'frame','frameAmt','lenses','lensAmt'
-      ];
-      for (const id of requiredIds) {
-        const field = document.getElementById(id);
-        if (!field.value.trim()) {
-          field.style.borderColor = 'red';
-          alert(`⚠️ Please fill in the "${id}" field before saving or printing.`);
-          field.focus();
-          return false;
-        } else {
-          field.style.borderColor = '#b71c1c';
-        }
-      }
-      if (!billDate.value) billDate.value = new Date().toISOString().split('T')[0];
-      return true;
-    }
-
     function saveInvoice() {
-      if (!validateFields()) return;
       updateTotals();
-
-      const newInvoice = {
+      const invoice = {
         billNo: billNo.value,
         billDate: billDate.value,
         custName: custName.value,
+        custAge: custAge.value,
         custAddr: custAddr.value,
         custContact: custContact.value,
         frame: frame.value,
@@ -374,38 +297,26 @@
         lensAmt: lensAmt.value,
         advance: advance.value,
         total: totalEl.textContent,
-        balance: balanceEl.textContent,
-        deliveryStatus: "Awaiting Confirmation"
+        balance: balanceEl.textContent
       };
-
-      localStorage.setItem('lastInvoice', JSON.stringify(newInvoice));
-
-      const bills = JSON.parse(localStorage.getItem('bills')) || [];
-      bills.push(newInvoice);
-      localStorage.setItem('bills', JSON.stringify(bills));
-
+      localStorage.setItem('lastInvoice', JSON.stringify(invoice));
       alert('✅ Invoice saved successfully!');
-    }
-
-    function validateBeforePrint() {
-      if (!validateFields()) return;
-      updateTotals();
-      window.print();
     }
 
     window.onload = () => {
       const saved = JSON.parse(localStorage.getItem('lastInvoice'));
       if (saved) {
-        billNo.value = saved.billNo;
-        billDate.value = saved.billDate;
-        custName.value = saved.custName;
-        custAddr.value = saved.custAddr;
-        custContact.value = saved.custContact;
-        frame.value = saved.frame;
-        frameAmt.value = saved.frameAmt;
-        lenses.value = saved.lenses;
-        lensAmt.value = saved.lensAmt;
-        advance.value = saved.advance;
+        billNo.value = saved.billNo || '';
+        billDate.value = saved.billDate || '';
+        custName.value = saved.custName || '';
+        custAge.value = saved.custAge || '';
+        custAddr.value = saved.custAddr || '';
+        custContact.value = saved.custContact || '';
+        frame.value = saved.frame || '';
+        frameAmt.value = saved.frameAmt || '';
+        lenses.value = saved.lenses || '';
+        lensAmt.value = saved.lensAmt || '';
+        advance.value = saved.advance || '0';
         updateTotals();
       }
     };
